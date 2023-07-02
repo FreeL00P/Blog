@@ -6,12 +6,20 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.freel00p.domain.ResponseResult;
 import com.freel00p.domain.entity.Article;
+import com.freel00p.domain.entity.Category;
+import com.freel00p.domain.vo.ArticleDetailVo;
+import com.freel00p.domain.vo.ArticleListVo;
 import com.freel00p.domain.vo.HotArticleVo;
+import com.freel00p.domain.vo.PageVo;
 import com.freel00p.service.ArticleService;
 import com.freel00p.mapper.ArticleMapper;
+import com.freel00p.service.CategoryService;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.freel00p.constants.SystemConstants.ARTICLE_STATUS_NORMAL;
@@ -25,6 +33,8 @@ import static com.freel00p.constants.SystemConstants.ARTICLE_STATUS_NORMAL;
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     implements ArticleService {
 
+    @Autowired
+    private CategoryService categoryService;
     @Override
     public ResponseResult hotArticleList() {
         //查询热门文章
@@ -44,6 +54,37 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
 
         return ResponseResult.okResult(hotArticleVos);
+    }
+
+    @Override
+    public ResponseResult articleList(Integer pageNum, Integer pageSize, Long categoryId) {
+        //构建查询条件
+        LambdaQueryWrapper<Article> articleWrapper = new LambdaQueryWrapper<>();
+        articleWrapper.eq(Objects.nonNull(categoryId)&&categoryId>0 ,Article::getCategoryId,categoryId);//获取对应分类的文章
+        articleWrapper.eq(Article::getStatus, ARTICLE_STATUS_NORMAL);//已发布的文章
+        articleWrapper.orderByDesc(Article::getIsTop);
+        Page<Article> page = new Page<>(pageNum, pageSize);
+        page(page,articleWrapper);
+
+        //查询categoryName
+        List<Article> articles = page.getRecords().stream()
+                .map(article -> article.setCategoryName(categoryService.getById(article.getCategoryId()).getName()))
+                .collect(Collectors.toList());
+        //封装查询结果
+        List<ArticleListVo> articleListVos = BeanUtil.copyToList(articles, ArticleListVo.class);
+        PageVo pageVo = new PageVo(articleListVos,page.getTotal());
+        return ResponseResult.okResult(pageVo);
+    }
+
+    @Override
+    public ResponseResult getArticleDetail(Long id) {
+        //根据id查询文章信息
+        Article article = this.getById(id);
+        //查询文章分类名称
+        Category category = categoryService.getById(article.getCategoryId());
+        if (category!=null) article.setCategoryName(category.getName());
+        ArticleDetailVo articleDetailVo = BeanUtil.copyProperties(article, ArticleDetailVo.class);
+        return ResponseResult.okResult(articleDetailVo);
     }
 }
 
