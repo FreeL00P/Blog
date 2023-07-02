@@ -1,5 +1,6 @@
 package com.freel00p.service;
 
+import com.freel00p.domain.ResponseResult;
 import com.freel00p.domain.entity.Category;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -10,4 +11,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface CategoryService extends IService<Category> {
 
+    ResponseResult getCategoryList();
 }

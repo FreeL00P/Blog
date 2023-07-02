@@ -3,6 +3,9 @@ package com.freel00p.service;
 import com.freel00p.domain.ResponseResult;
 import com.freel00p.domain.entity.Article;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.freel00p.domain.vo.HotArticleVo;
+
+import java.util.List;
 
 /**
 * @author freeloop

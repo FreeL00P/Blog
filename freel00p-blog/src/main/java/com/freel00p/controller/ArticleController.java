@@ -2,6 +2,7 @@ package com.freel00p.controller;
 
 import com.freel00p.domain.ResponseResult;
 import com.freel00p.domain.entity.Article;
+import com.freel00p.domain.vo.HotArticleVo;
 import com.freel00p.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,8 +26,7 @@ public class ArticleController {
     @GetMapping("/hotArticleList")
     public ResponseResult hotArticleList(){
 
-        ResponseResult result =  articleService.hotArticleList();
-        return result;
+        return articleService.hotArticleList();
     }
 
 }
