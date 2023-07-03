@@ -14,7 +14,6 @@ import com.freel00p.domain.vo.PageVo;
 import com.freel00p.service.ArticleService;
 import com.freel00p.mapper.ArticleMapper;
 import com.freel00p.service.CategoryService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

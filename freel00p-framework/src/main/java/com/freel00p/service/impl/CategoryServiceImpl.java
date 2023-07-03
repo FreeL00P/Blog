@@ -3,7 +3,6 @@ package com.freel00p.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.freel00p.constants.SystemConstants;
 import com.freel00p.domain.ResponseResult;
 import com.freel00p.domain.entity.Article;
 import com.freel00p.domain.entity.Category;
