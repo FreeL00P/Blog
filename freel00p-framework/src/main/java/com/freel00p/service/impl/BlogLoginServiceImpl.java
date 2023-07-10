@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,5 +51,17 @@ public class BlogLoginServiceImpl implements BlogLoginService {
         //把token和UserInfo封装返回
         BlogUserLoginVo blogUserLoginVo = new BlogUserLoginVo(jwt, BeanUtil.copyProperties(loginUser.getUser(), UserInfoVo.class));
         return ResponseResult.okResult(blogUserLoginVo);
+    }
+
+    @Override
+    public ResponseResult logout() {
+        //从security上下文中获取用户信息
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        LoginUser loginUser  =(LoginUser) authentication.getPrincipal();
+        //获取用户id
+        Long userId = loginUser.getUser().getId();
+        //删除redis中的用户信息
+        redisCache.deleteObject(RedisConstants.REDIS_BLOG_LOGIN_ID+userId);
+        return ResponseResult.okResult();
     }
 }
