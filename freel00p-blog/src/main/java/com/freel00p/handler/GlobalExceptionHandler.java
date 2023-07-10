@@ -2,8 +2,9 @@ package com.freel00p.handler;
 
 import com.freel00p.domain.ResponseResult;
 import com.freel00p.enums.AppHttpCodeEnum;
+import com.freel00p.exception.SystemException;
 import lombok.extern.slf4j.Slf4j;
-import org.omg.CORBA.SystemException;
+
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
