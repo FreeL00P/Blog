@@ -1,11 +1,10 @@
 package com.freel00p.controller;
 
 import com.freel00p.domain.ResponseResult;
+import com.freel00p.domain.entity.Comment;
 import com.freel00p.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * CommentController
@@ -27,5 +26,12 @@ public class CommentController {
     @GetMapping("/commentlist")
     public ResponseResult commentList(Long articleId,Integer pageNum,Integer pageSize) {
         return commentService.commentList(articleId,pageNum,pageSize);
+    }
+    /**
+     * 发送评论接口
+     */
+    @PostMapping
+    public ResponseResult addComment(@RequestBody Comment comment){
+        return commentService.addComment(comment);
     }
 }

@@ -1,11 +1,11 @@
 package com.freel00p.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.io.Serializable;
 import java.util.Date;
+
+import com.freel00p.domain.BaseEntity;
 import lombok.Data;
 
 /**
@@ -14,7 +14,7 @@ import lombok.Data;
  */
 @TableName(value ="fl_comment")
 @Data
-public class Comment implements Serializable {
+public class Comment extends BaseEntity implements Serializable {
     /**
      * 
      */
@@ -51,25 +51,6 @@ public class Comment implements Serializable {
      */
     private Long toCommentId;
 
-    /**
-     * 
-     */
-    private Long createBy;
-
-    /**
-     * 
-     */
-    private Date createTime;
-
-    /**
-     * 
-     */
-    private Long updateBy;
-
-    /**
-     * 
-     */
-    private Date updateTime;
 
     /**
      * 删除标志（0代表未删除，1代表已删除）

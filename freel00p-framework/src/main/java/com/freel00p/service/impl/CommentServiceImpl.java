@@ -1,6 +1,7 @@
 package com.freel00p.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -9,11 +10,14 @@ import com.freel00p.domain.entity.Comment;
 import com.freel00p.domain.entity.User;
 import com.freel00p.domain.vo.CategoryVo;
 import com.freel00p.domain.vo.CommentVo;
+import com.freel00p.enums.AppHttpCodeEnum;
+import com.freel00p.exception.SystemException;
 import com.freel00p.service.CommentService;
 import com.freel00p.mapper.CommentMapper;
 import com.freel00p.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -74,6 +78,15 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
         }).collect(Collectors.toList());
     }
 
+    @Override
+    public ResponseResult addComment(Comment comment) {
+        //判断评论内容
+        if (!StrUtil.isEmpty(comment.getContent())){
+            throw new SystemException(AppHttpCodeEnum.CONTENT_NOT_NULL);
+        }
+        this.save(comment);
+        return ResponseResult.okResult();
+    }
 }
 
 

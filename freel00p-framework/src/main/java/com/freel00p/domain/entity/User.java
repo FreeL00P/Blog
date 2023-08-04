@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
+
+import com.freel00p.domain.BaseEntity;
 import lombok.Data;
 
 /**
@@ -14,7 +16,7 @@ import lombok.Data;
  */
 @TableName(value ="sys_user")
 @Data
-public class User implements Serializable {
+public class User extends BaseEntity implements Serializable {
     /**
      * 主键
      */
@@ -66,25 +68,7 @@ public class User implements Serializable {
      */
     private String avatar;
 
-    /**
-     * 创建人的用户id
-     */
-    private Long createBy;
 
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 更新人
-     */
-    private Long updateBy;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
 
     /**
      * 删除标志（0代表未删除，1代表已删除）

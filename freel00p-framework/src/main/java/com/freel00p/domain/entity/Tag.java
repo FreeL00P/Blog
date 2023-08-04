@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
+
+import com.freel00p.domain.BaseEntity;
 import lombok.Data;
 
 /**
@@ -14,7 +16,7 @@ import lombok.Data;
  */
 @TableName(value ="fl_tag")
 @Data
-public class Tag implements Serializable {
+public class Tag extends BaseEntity implements Serializable {
     /**
      * 
      */
@@ -26,25 +28,6 @@ public class Tag implements Serializable {
      */
     private String name;
 
-    /**
-     * 
-     */
-    private Long createBy;
-
-    /**
-     * 
-     */
-    private Date createTime;
-
-    /**
-     * 
-     */
-    private Long updateBy;
-
-    /**
-     * 
-     */
-    private Date updateTime;
 
     /**
      * 删除标志（0代表未删除，1代表已删除）

@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.freel00p.domain.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +22,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Article implements Serializable {
+public class Article extends BaseEntity implements Serializable {
     /**
      * 
      */
@@ -73,26 +74,6 @@ public class Article implements Serializable {
      * 是否允许评论 1是，0否
      */
     private String isComment;
-
-    /**
-     * 
-     */
-    private Long createBy;
-
-    /**
-     * 
-     */
-    private Date createTime;
-
-    /**
-     * 
-     */
-    private Long updateBy;
-
-    /**
-     * 
-     */
-    private Date updateTime;
 
     /**
      * 删除标志（0代表未删除，1代表已删除）
