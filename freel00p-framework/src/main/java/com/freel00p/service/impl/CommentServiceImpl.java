@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.freel00p.constants.SystemConstants;
 import com.freel00p.domain.ResponseResult;
 import com.freel00p.domain.entity.Comment;
 import com.freel00p.domain.entity.User;
@@ -34,26 +35,6 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
     @Autowired
     private UserService userService;
 
-    @Override
-    public ResponseResult commentList(Long articleId,Integer pageNum,Integer pageSize) {
-        //1.先查出文章的根评论
-        LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Comment::getArticleId,articleId);
-        queryWrapper.eq(Comment::getType,0);//是文章评论
-        queryWrapper.eq(Comment::getRootId,"-1");//根评论
-        queryWrapper.orderByAsc(Comment::getCreateTime);
-        //分页查询
-        Page<Comment> commentPage = new Page<>(pageNum, pageSize);
-        page(commentPage,queryWrapper);
-        List<Comment> comments = commentPage.getRecords();
-        //封装成Vo对象
-        List<CommentVo> commentVos = this.toCommentVoList(comments);
-        //2.查出根评论下的子评论
-        for (CommentVo commentVo : commentVos) {
-            commentVo.setChildren(this.getChildrenList(commentVo.getRootId()));
-        }
-        return ResponseResult.okResult(commentVos);
-    }
     public List<CommentVo> getChildrenList(Long rootId){
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Comment::getType, 0);//是文章评论
@@ -86,6 +67,27 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
         }
         this.save(comment);
         return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult commentList(String commentType, Long articleId, Integer pageNum, Integer pageSize) {
+        //1.先查出文章的根评论
+        LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Comment::getArticleId,articleId);
+        queryWrapper.eq(SystemConstants.ARTICLE_COMMENT.equals(commentType),Comment::getArticleId,articleId);
+        queryWrapper.eq(Comment::getRootId,"-1");//根评论
+        queryWrapper.orderByAsc(Comment::getCreateTime);
+        //分页查询
+        Page<Comment> commentPage = new Page<>(pageNum, pageSize);
+        page(commentPage,queryWrapper);
+        List<Comment> comments = commentPage.getRecords();
+        //封装成Vo对象
+        List<CommentVo> commentVos = this.toCommentVoList(comments);
+        //2.查出根评论下的子评论
+        for (CommentVo commentVo : commentVos) {
+            commentVo.setChildren(this.getChildrenList(commentVo.getRootId()));
+        }
+        return ResponseResult.okResult(commentVos);
     }
 }
 

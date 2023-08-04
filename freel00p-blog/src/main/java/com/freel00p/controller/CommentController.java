@@ -1,5 +1,6 @@
 package com.freel00p.controller;
 
+import com.freel00p.constants.SystemConstants;
 import com.freel00p.domain.ResponseResult;
 import com.freel00p.domain.entity.Comment;
 import com.freel00p.service.CommentService;
@@ -25,7 +26,7 @@ public class CommentController {
      */
     @GetMapping("/commentlist")
     public ResponseResult commentList(Long articleId,Integer pageNum,Integer pageSize) {
-        return commentService.commentList(articleId,pageNum,pageSize);
+        return commentService.commentList(SystemConstants.ARTICLE_COMMENT,articleId,pageNum,pageSize);
     }
     /**
      * 发送评论接口
@@ -33,5 +34,16 @@ public class CommentController {
     @PostMapping
     public ResponseResult addComment(@RequestBody Comment comment){
         return commentService.addComment(comment);
+    }
+
+    /**
+     * 友链评论列表
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    @GetMapping("/linkCommentList")
+    public ResponseResult linkCommentList(Integer pageNum,Integer pageSize){
+        return commentService.commentList(SystemConstants.LINK_COMMENT,null,pageNum,pageSize);
     }
 }
