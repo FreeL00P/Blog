@@ -1,6 +1,7 @@
-package com.freel00p.service.impl;
+package com.freel00p.admin.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.freel00p.admin.service.LoginService;
 import com.freel00p.blog.config.RedisCache;
 import com.freel00p.constants.RedisConstants;
 import com.freel00p.domain.ResponseResult;
@@ -20,13 +21,13 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 
 /**
- * BlogLoginServiceImpl
+ * LoginServiceImpl
  *
  * @author fj
- * @since 2023/7/3 13:38
+ * @since 2023/8/5 22:02
  */
 @Service
-public class BlogLoginServiceImpl implements BlogLoginService {
+public class LoginServiceImpl implements LoginService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -45,7 +46,7 @@ public class BlogLoginServiceImpl implements BlogLoginService {
         Long userId = loginUser.getUser().getId();
         String jwt = JwtUtil.createJWT(userId.toString());
         //把用户信息保存到redis
-        redisCache.setCacheObject(RedisConstants.REDIS_BLOG_LOGIN_ID+userId, loginUser);
+        redisCache.setCacheObject(RedisConstants.REDIS_ADMIN_LOGIN_ID+userId, loginUser);
         //把token和UserInfo封装返回
         BlogUserLoginVo blogUserLoginVo = new BlogUserLoginVo(jwt, BeanUtil.copyProperties(loginUser.getUser(), UserInfoVo.class));
         return ResponseResult.okResult(blogUserLoginVo);
@@ -59,7 +60,7 @@ public class BlogLoginServiceImpl implements BlogLoginService {
         //获取用户id
         Long userId = loginUser.getUser().getId();
         //删除redis中的用户信息
-        redisCache.deleteObject(RedisConstants.REDIS_BLOG_LOGIN_ID+userId);
+        redisCache.deleteObject(RedisConstants.REDIS_ADMIN_LOGIN_ID+userId);
         return ResponseResult.okResult();
     }
 }
