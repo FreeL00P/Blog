@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.freel00p.config.RedisCache;
 import com.freel00p.domain.ResponseResult;
 import com.freel00p.domain.entity.Article;
 import com.freel00p.domain.entity.Category;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.freel00p.constants.RedisConstants.ARTICLE_VIEW_COUNT;
 import static com.freel00p.constants.SystemConstants.ARTICLE_STATUS_NORMAL;
 
 /**
@@ -34,6 +36,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private RedisCache redisCache;
+
     @Override
     public ResponseResult hotArticleList() {
         //查询热门文章
@@ -79,11 +85,21 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     public ResponseResult getArticleDetail(Long id) {
         //根据id查询文章信息
         Article article = this.getById(id);
+        //查询文章浏览信息
+        Integer viewCount = redisCache.getCacheMapValue(ARTICLE_VIEW_COUNT, id.toString());
+        article.setViewCount(viewCount.longValue());
         //查询文章分类名称
         Category category = categoryService.getById(article.getCategoryId());
         if (category!=null) article.setCategoryName(category.getName());
         ArticleDetailVo articleDetailVo = BeanUtil.copyProperties(article, ArticleDetailVo.class);
         return ResponseResult.okResult(articleDetailVo);
+    }
+
+    @Override
+    public ResponseResult updateViewCount(Long id) {
+        //更新redis中对应 id的浏览量
+        redisCache.incrementCacheMapValue(ARTICLE_VIEW_COUNT,id.toString(),1);
+        return ResponseResult.okResult();
     }
 }
 

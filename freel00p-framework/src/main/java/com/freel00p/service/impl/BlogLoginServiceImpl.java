@@ -36,7 +36,7 @@ public class BlogLoginServiceImpl implements BlogLoginService {
     private RedisCache redisCache;
     @Override
     public ResponseResult login(User user) {
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword());
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
         Authentication authenticate = authenticationManager.authenticate(token);
         //判断是否认证成功
         if(Objects.isNull(authenticate)){

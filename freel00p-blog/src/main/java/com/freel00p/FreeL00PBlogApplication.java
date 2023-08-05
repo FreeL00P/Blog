@@ -3,6 +3,7 @@ package com.freel00p;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * FreeL00PBlogApplication
@@ -12,6 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 @MapperScan("com.freel00p.mapper")
+@EnableScheduling //开启定时任务功能
 public class FreeL00PBlogApplication {
     public static void main(String[] args) {
         SpringApplication.run(FreeL00PBlogApplication.class,args);

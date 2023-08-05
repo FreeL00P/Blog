@@ -3,10 +3,7 @@ package com.freel00p.controller;
 import com.freel00p.domain.ResponseResult;
 import com.freel00p.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * HelloController
@@ -22,8 +19,8 @@ public class ArticleController {
     private ArticleService articleService;
 
     /**
-     * 查询热门文章
-     * @return
+     *
+     * @return  查询热门文章
      */
     @GetMapping("/hotArticleList")
     public ResponseResult hotArticleList(){
@@ -33,18 +30,28 @@ public class ArticleController {
 
     /**
      * 分页查询 文章列表
-     * @param pageNum
-     * @param pageSize
-     * @param categoryId
-     * @return
+     * @param pageNum 1
+     * @param pageSize 10
+     * @param categoryId 分类id
+     * @return 文章列表
      */
     @GetMapping("/articleList")
     public ResponseResult articleList(Integer pageNum,Integer pageSize,Long categoryId){
         return articleService.articleList(pageNum,pageSize,categoryId);
     }
+
+    /**
+     * 获取文章信息
+     * @param id 文章di
+     * @return info
+     */
     @GetMapping("/{id}")
     public ResponseResult getArticleDetail(@PathVariable("id") Long id){
         return articleService.getArticleDetail(id);
     }
 
+    @PutMapping("/updateViewCount/{id}")
+    public ResponseResult updateViewCount(@PathVariable("id") Long id){
+        return articleService.updateViewCount(id);
+    }
 }
