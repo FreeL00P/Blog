@@ -1,6 +1,7 @@
 package com.freel00p.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.freel00p.service.LoginService;
 import com.freel00p.config.RedisCache;
 import com.freel00p.constants.RedisConstants;
 import com.freel00p.domain.ResponseResult;
@@ -8,25 +9,24 @@ import com.freel00p.domain.entity.LoginUser;
 import com.freel00p.domain.entity.User;
 import com.freel00p.domain.vo.BlogUserLoginVo;
 import com.freel00p.domain.vo.UserInfoVo;
-import com.freel00p.service.BlogLoginService;
 import com.freel00p.utils.JwtUtil;
+import com.freel00p.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
 /**
- * BlogLoginServiceImpl
+ * LoginServiceImpl
  *
  * @author fj
- * @since 2023/7/3 13:38
+ * @since 2023/8/5 22:02
  */
 @Service
-public class BlogLoginServiceImpl implements BlogLoginService {
+public class LoginServiceImpl implements LoginService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -45,7 +45,7 @@ public class BlogLoginServiceImpl implements BlogLoginService {
         Long userId = loginUser.getUser().getId();
         String jwt = JwtUtil.createJWT(userId.toString());
         //把用户信息保存到redis
-        redisCache.setCacheObject(RedisConstants.REDIS_BLOG_LOGIN_ID+userId, loginUser);
+        redisCache.setCacheObject(RedisConstants.REDIS_ADMIN_LOGIN_ID+userId, loginUser);
         //把token和UserInfo封装返回
         BlogUserLoginVo blogUserLoginVo = new BlogUserLoginVo(jwt, BeanUtil.copyProperties(loginUser.getUser(), UserInfoVo.class));
         return ResponseResult.okResult(blogUserLoginVo);
@@ -53,13 +53,10 @@ public class BlogLoginServiceImpl implements BlogLoginService {
 
     @Override
     public ResponseResult logout() {
-        //从security上下文中获取用户信息
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        LoginUser loginUser  =(LoginUser) authentication.getPrincipal();
-        //获取用户id
-        Long userId = loginUser.getUser().getId();
+        //获取当前登录的用户id
+        Long userId = SecurityUtils.getUserId();
         //删除redis中的用户信息
-        redisCache.deleteObject(RedisConstants.REDIS_BLOG_LOGIN_ID+userId);
+        redisCache.deleteObject(RedisConstants.REDIS_ADMIN_LOGIN_ID+userId);
         return ResponseResult.okResult();
     }
 }

@@ -1,6 +1,7 @@
 package com.freel00p.service;
 
 import com.freel00p.domain.ResponseResult;
+import com.freel00p.domain.dto.AddArticleDto;
 import com.freel00p.domain.entity.Article;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -18,4 +19,6 @@ public interface ArticleService extends IService<Article> {
     ResponseResult getArticleDetail(Long id);
 
     ResponseResult updateViewCount(Long id);
+
+    ResponseResult add(AddArticleDto article);
 }

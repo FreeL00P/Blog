@@ -4,9 +4,11 @@ import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.freel00p.blog.config.RedisCache;
+import com.freel00p.config.RedisCache;
 import com.freel00p.domain.ResponseResult;
+import com.freel00p.domain.dto.AddArticleDto;
 import com.freel00p.domain.entity.Article;
+import com.freel00p.domain.entity.ArticleTag;
 import com.freel00p.domain.entity.Category;
 import com.freel00p.domain.vo.ArticleDetailVo;
 import com.freel00p.domain.vo.ArticleListVo;
@@ -17,6 +19,7 @@ import com.freel00p.mapper.ArticleMapper;
 import com.freel00p.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -39,6 +42,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
     @Autowired
     private RedisCache redisCache;
+
+    @Autowired
+    private ArticleTagServiceImpl articleTagService;
 
     @Override
     public ResponseResult hotArticleList() {
@@ -99,6 +105,23 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     public ResponseResult updateViewCount(Long id) {
         //更新redis中对应 id的浏览量
         redisCache.incrementCacheMapValue(ARTICLE_VIEW_COUNT,id.toString(),1);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    @Transactional
+    public ResponseResult add(AddArticleDto articleDto) {
+        //添加 博客
+        Article article = BeanUtil.copyProperties(articleDto, Article.class);
+        save(article);
+
+
+        List<ArticleTag> articleTags = articleDto.getTags().stream()
+                .map(tagId -> new ArticleTag(article.getId(), tagId))
+                .collect(Collectors.toList());
+
+        //添加 博客和标签的关联
+        articleTagService.saveBatch(articleTags);
         return ResponseResult.okResult();
     }
 }

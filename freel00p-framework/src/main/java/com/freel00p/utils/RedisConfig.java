@@ -1,6 +1,6 @@
 package com.freel00p.utils;
 
-import com.freel00p.blog.config.FastJsonRedisSerializer;
+import com.freel00p.config.FastJsonRedisSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;

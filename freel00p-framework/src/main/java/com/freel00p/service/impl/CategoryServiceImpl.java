@@ -3,9 +3,11 @@ package com.freel00p.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.freel00p.constants.SystemConstants;
 import com.freel00p.domain.ResponseResult;
 import com.freel00p.domain.entity.Article;
 import com.freel00p.domain.entity.Category;
+import com.freel00p.domain.vo.CategoryListVo;
 import com.freel00p.domain.vo.CategoryVo;
 import com.freel00p.service.ArticleService;
 import com.freel00p.service.CategoryService;
@@ -47,6 +49,15 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
         List<CategoryVo> categoryVos = BeanUtil.copyToList(collect, CategoryVo.class);
         return ResponseResult.okResult(categoryVos);
     }
+
+    @Override
+    public List<CategoryListVo> listCategory() {
+        LambdaQueryWrapper<Category> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Category::getStatus, SystemConstants.NORMAL);
+        List<Category> list = list(wrapper);
+        return BeanUtil.copyToList(list, CategoryListVo.class);
+    }
+
 }
 
 
