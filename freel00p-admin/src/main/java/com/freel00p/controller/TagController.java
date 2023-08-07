@@ -45,14 +45,13 @@ public class TagController {
 
     @GetMapping("{id}")
     public ResponseResult getTagInfo(@PathVariable Long id){
-        tagService.getById(id);
-        return ResponseResult.okResult();
+
+        return ResponseResult.okResult(tagService.getById(id));
     }
 
     @PutMapping()
     public ResponseResult updateTag(@RequestBody Tag tag){
-        tagService.updateById(tag);
-        return ResponseResult.okResult();
+        return ResponseResult.okResult(tagService.updateById(tag));
     }
 
     @GetMapping("listAllTag")

@@ -34,7 +34,7 @@ public class LoginServiceImpl implements LoginService {
     private RedisCache redisCache;
     @Override
     public ResponseResult login(User user) {
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword());
         Authentication authenticate = authenticationManager.authenticate(token);
         //判断是否认证成功
         if(Objects.isNull(authenticate)){

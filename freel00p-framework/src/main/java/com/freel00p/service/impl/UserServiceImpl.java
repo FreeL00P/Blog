@@ -50,7 +50,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public ResponseResult register(User user) {
         //对数据进行非空判断
-        if(!StringUtils.hasText(user.getUsername())){
+        if(!StringUtils.hasText(user.getUserName())){
             throw new SystemException(AppHttpCodeEnum.USERNAME_NOT_NULL);
         }
         if(!StringUtils.hasText(user.getPassword())){
@@ -63,7 +63,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             throw new SystemException(AppHttpCodeEnum.NICKNAME_NOT_NULL);
         }
         //对数据进行是否存在的判断
-        if(userNameExist(user.getUsername())){
+        if(userNameExist(user.getUserName())){
             throw new SystemException(AppHttpCodeEnum.USERNAME_EXIST);
         }
         if(nickNameExist(user.getNickName())){
@@ -87,7 +87,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     private boolean userNameExist(String userName) {
         User user = this.getOne(
-                new LambdaQueryWrapper<User>().eq(User::getUsername, userName)
+                new LambdaQueryWrapper<User>().eq(User::getUserName, userName)
         );
         return user != null;
     }

@@ -2,6 +2,7 @@ package com.freel00p.filter;
 
 import com.alibaba.fastjson.JSON;
 import com.freel00p.config.RedisCache;
+import com.freel00p.constants.RedisConstants;
 import com.freel00p.domain.ResponseResult;
 import com.freel00p.domain.entity.LoginUser;
 import com.freel00p.enums.AppHttpCodeEnum;
@@ -58,7 +59,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         }
         String userId = claims.getSubject();
         //从redis中获取用户信息
-        LoginUser loginUser = redisCache.getCacheObject("login:" + userId);
+        //从redis获取用户信息
+        LoginUser loginUser = redisCache.getCacheObject(RedisConstants.REDIS_ADMIN_LOGIN_ID + userId);
         //如果获取不到
         if(Objects.isNull(loginUser)){
             //说明登录过期  提示重新登录

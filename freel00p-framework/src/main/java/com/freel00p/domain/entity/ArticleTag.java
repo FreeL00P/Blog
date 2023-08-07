@@ -28,7 +28,7 @@ public class ArticleTag implements Serializable {
     /**
      * 标签id
      */
-    @TableId(value = "tag_id")
+    @TableField(value = "tag_id")
     private Long tagId;
 
     @TableField(exist = false)

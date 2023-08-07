@@ -27,7 +27,7 @@ public class User extends BaseEntity implements Serializable {
      * 用户名
      */
     @TableField("user_name")
-    private String username;
+    private String userName;
 
     /**
      * 昵称
