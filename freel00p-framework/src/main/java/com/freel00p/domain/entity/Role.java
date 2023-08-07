@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
+
+import com.freel00p.domain.BaseEntity;
 import lombok.Data;
 
 /**
@@ -14,7 +16,7 @@ import lombok.Data;
  */
 @TableName(value ="sys_role")
 @Data
-public class Role implements Serializable {
+public class Role extends BaseEntity implements Serializable {
     /**
      * 角色ID
      */
@@ -51,29 +53,6 @@ public class Role implements Serializable {
     @TableField(value = "del_flag")
     private String delFlag;
 
-    /**
-     * 创建者
-     */
-    @TableField(value = "create_by")
-    private Long createBy;
-
-    /**
-     * 创建时间
-     */
-    @TableField(value = "create_time")
-    private Date createTime;
-
-    /**
-     * 更新者
-     */
-    @TableField(value = "update_by")
-    private Long updateBy;
-
-    /**
-     * 更新时间
-     */
-    @TableField(value = "update_time")
-    private Date updateTime;
 
     /**
      * 备注

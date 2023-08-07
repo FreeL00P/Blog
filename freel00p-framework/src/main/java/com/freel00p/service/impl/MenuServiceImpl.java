@@ -1,8 +1,10 @@
 package com.freel00p.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.freel00p.constants.SystemConstants;
+import com.freel00p.domain.ResponseResult;
 import com.freel00p.domain.entity.Menu;
 import com.freel00p.service.MenuService;
 import com.freel00p.mapper.MenuMapper;
@@ -76,6 +78,18 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu>
                 .map(m->m.setChildren(getChildren(m,menus)))
                 .collect(Collectors.toList());
         return childrenList;
+    }
+
+    @Override
+    public ResponseResult queryList(String status, String menuName) {
+        //构造查询条件
+        LambdaQueryWrapper<Menu> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(StrUtil.isNotEmpty(menuName),Menu::getMenuName,menuName);
+        wrapper.like(StrUtil.isNotEmpty(status),Menu::getStatus,status);
+        wrapper.orderByAsc(Menu::getParentId);
+        wrapper.orderByAsc(Menu::getOrderNum);
+        List<Menu> list = this.list(wrapper);
+        return ResponseResult.okResult(list);
     }
 }
 

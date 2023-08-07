@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ArticleTag implements Serializable {
+public class ArticleTag  implements Serializable {
     /**
      * 文章id
      */

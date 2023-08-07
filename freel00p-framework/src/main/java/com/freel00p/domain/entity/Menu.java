@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import com.freel00p.domain.BaseEntity;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -18,7 +19,7 @@ import lombok.experimental.Accessors;
 @TableName(value ="sys_menu")
 @Data
 @Accessors(chain = true)
-public class Menu implements Serializable {
+public class Menu extends BaseEntity implements Serializable {
     /**
      * 菜单ID
      */
@@ -91,29 +92,6 @@ public class Menu implements Serializable {
     @TableField(value = "icon")
     private String icon;
 
-    /**
-     * 创建者
-     */
-    @TableField(value = "create_by")
-    private Long createBy;
-
-    /**
-     * 创建时间
-     */
-    @TableField(value = "create_time")
-    private Date createTime;
-
-    /**
-     * 更新者
-     */
-    @TableField(value = "update_by")
-    private Long updateBy;
-
-    /**
-     * 更新时间
-     */
-    @TableField(value = "update_time")
-    private Date updateTime;
 
     /**
      * 备注
