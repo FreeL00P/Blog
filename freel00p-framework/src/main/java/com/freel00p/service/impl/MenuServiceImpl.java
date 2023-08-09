@@ -8,13 +8,16 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.freel00p.constants.SystemConstants;
 import com.freel00p.domain.ResponseResult;
 import com.freel00p.domain.entity.Menu;
+import com.freel00p.domain.vo.MenuTreeVo;
 import com.freel00p.domain.vo.MenuVo;
 import com.freel00p.exception.SystemException;
 import com.freel00p.service.MenuService;
 import com.freel00p.mapper.MenuMapper;
 import com.freel00p.utils.SecurityUtils;
+import jdk.nashorn.internal.ir.LiteralNode;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -93,7 +96,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu>
         //构造查询条件
         LambdaQueryWrapper<Menu> wrapper = new LambdaQueryWrapper<>();
         wrapper.like(StrUtil.isNotEmpty(menuName),Menu::getMenuName,menuName);
-        wrapper.like(StrUtil.isNotEmpty(status),Menu::getStatus,status);
+        wrapper.eq(StrUtil.isNotEmpty(status),Menu::getStatus,status);
         wrapper.orderByAsc(Menu::getParentId);
         wrapper.orderByAsc(Menu::getOrderNum);
         List<Menu> list = this.list(wrapper);
@@ -136,6 +139,40 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu>
         }
         this.removeById(id);
         return ResponseResult.okResult();
+    }
+
+    /**
+     * 树形结构展示菜单列表
+     * @return
+     */
+    @Override
+    public ResponseResult treeselect() {
+        //先查询出所有菜单
+        List<Menu> allMenuList = this.list();
+        ArrayList<MenuTreeVo> treeMenuList = new ArrayList<>();
+        //查询出所有一级菜单
+        LambdaQueryWrapper<Menu> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Menu::getParentId,0);
+        List<Menu> oneMenuList = this.list(wrapper);
+        for (Menu menu : oneMenuList) {
+            MenuTreeVo menuTreeVo = BeanUtil.copyProperties(menu, MenuTreeVo.class);
+            menuTreeVo.setChildren(getChildren(menu.getId(),allMenuList));
+            menuTreeVo.setLabel(menu.getMenuName());
+            treeMenuList.add(menuTreeVo);
+        }
+        //获取所有子菜单
+        return ResponseResult.okResult(treeMenuList);
+    }
+
+    private List<MenuTreeVo> getChildren(Long menuId,List<Menu> allMenuList){
+        return allMenuList.stream()
+                .filter(item -> item.getParentId().equals(menuId))
+                .map(item -> {
+                    MenuTreeVo menuTreeVo = BeanUtil.copyProperties(item, MenuTreeVo.class);
+                    menuTreeVo.setLabel(item.getMenuName());
+                    menuTreeVo.setChildren(getChildren(item.getId(), allMenuList));
+                    return menuTreeVo;
+                }).collect(Collectors.toList());
     }
 }
 

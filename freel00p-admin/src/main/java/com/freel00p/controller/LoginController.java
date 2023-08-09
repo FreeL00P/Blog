@@ -14,7 +14,6 @@ import com.freel00p.exception.SystemException;
 import com.freel00p.service.MenuService;
 import com.freel00p.service.RoleService;
 import com.freel00p.utils.SecurityUtils;
-import com.sun.corba.se.impl.resolver.SplitLocalResolverImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -68,7 +67,7 @@ public class LoginController {
         return ResponseResult.okResult(adminUserInfoVo);
     }
     @GetMapping("getRouters")
-    public ResponseResult<RoutersVo> getRouters(){
+    public ResponseResult getRouters(){
         Long userId = SecurityUtils.getUserId();
         //查询menu 结果是tree的形式
         List<Menu> menus = menuService.selectRouterMenuTreeByUserId(userId);

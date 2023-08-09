@@ -1,6 +1,9 @@
 package com.freel00p.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.freel00p.domain.ResponseResult;
+import com.freel00p.domain.dto.AddRoleDto;
+import com.freel00p.domain.dto.RoleStatusDto;
 import com.freel00p.domain.entity.Role;
 
 import java.util.List;
@@ -13,4 +16,10 @@ import java.util.List;
 public interface RoleService extends IService<Role> {
 
     List<String> selectRoleKeyByUserId(Long id);
+
+    ResponseResult queryList(Integer pageNum, Integer pageSize, String roleName, String status);
+
+    ResponseResult changeStatus(RoleStatusDto roleStatusDto);
+
+    ResponseResult saveRole(AddRoleDto addRoleDto);
 }
