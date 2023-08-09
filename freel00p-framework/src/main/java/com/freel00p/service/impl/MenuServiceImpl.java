@@ -1,18 +1,26 @@
 package com.freel00p.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.freel00p.constants.SystemConstants;
 import com.freel00p.domain.ResponseResult;
 import com.freel00p.domain.entity.Menu;
+import com.freel00p.domain.vo.MenuVo;
+import com.freel00p.exception.SystemException;
 import com.freel00p.service.MenuService;
 import com.freel00p.mapper.MenuMapper;
 import com.freel00p.utils.SecurityUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static com.freel00p.enums.AppHttpCodeEnum.MENU_HAS_CHILDREN;
+import static com.freel00p.enums.AppHttpCodeEnum.PARENT_ID_NOT_MENU_ID;
 
 /**
 * @author freeloop
@@ -89,7 +97,45 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu>
         wrapper.orderByAsc(Menu::getParentId);
         wrapper.orderByAsc(Menu::getOrderNum);
         List<Menu> list = this.list(wrapper);
-        return ResponseResult.okResult(list);
+        List<MenuVo> menuVos = BeanUtil.copyToList(list, MenuVo.class);
+        return ResponseResult.okResult(menuVos);
+    }
+
+    @Override
+    public ResponseResult saveMenu(Menu menu) {
+        this.save(menu);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult getMenuById(Long id) {
+        Menu menu = this.getById(id);
+        MenuVo menuVo = BeanUtil.copyProperties(menu, MenuVo.class);
+        return ResponseResult.okResult(menuVo);
+    }
+
+    @Override
+    public ResponseResult updateMenu(Menu menu) {
+        //不能把自己的id当做父id
+        if (menu.getId().equals(menu.getParentId())){
+            throw new SystemException(PARENT_ID_NOT_MENU_ID);
+        }
+        this.updateById(menu);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult removeMenu(Long id) {
+        //查询当前菜单有无子菜单
+        LambdaQueryWrapper<Menu> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Menu::getParentId,id);
+        List<Menu> list = this.list(wrapper);
+        //如果有子菜单则不能删除
+        if (CollUtil.isNotEmpty(list)){
+            throw new SystemException(MENU_HAS_CHILDREN);
+        }
+        this.removeById(id);
+        return ResponseResult.okResult();
     }
 }
 
