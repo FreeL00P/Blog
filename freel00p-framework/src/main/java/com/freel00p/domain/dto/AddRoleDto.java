@@ -14,6 +14,7 @@ import java.util.List;
 @Data
 public class AddRoleDto {
 
+    private Long id;
     /**
      * 角色名称
      */

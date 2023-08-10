@@ -60,8 +60,22 @@ public class MenuController {
         return menuService.removeMenu(id);
     }
 
+    /**
+     * 查询菜单树
+     * @return
+     */
     @GetMapping("/treeselect")
     public ResponseResult getMenuTree(){
         return menuService.treeselect();
+    }
+
+    /**
+     * 加载对应角色菜单列表树
+     * @param id
+     * @return
+     */
+    @GetMapping("/roleMenuTreeselect/{id}")
+    public ResponseResult getRoleMenuTree(@PathVariable Long id){
+        return menuService.getRoleMenuTree(id);
     }
 }

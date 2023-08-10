@@ -43,9 +43,28 @@ public class RoleController {
         return roleService.changeStatus(roleStatusDto);
     }
 
+    /**
+     * 添加角色
+     * @param addRoleDto 角色info
+     * @return
+     */
     @PostMapping
     public ResponseResult addRole(@RequestBody AddRoleDto addRoleDto){
         return roleService.saveRole(addRoleDto);
     }
 
+    @GetMapping("/{id}")
+    public ResponseResult getRoleInfo(@PathVariable Long id){
+        return roleService.getRoleInfo(id);
+    }
+
+    @PutMapping
+    public ResponseResult updateRole(@RequestBody AddRoleDto addRoleDto){
+        return roleService.updateRole(addRoleDto);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseResult deleteRole(@PathVariable Long id){
+        return roleService.deleteRole(id);
+    }
 }

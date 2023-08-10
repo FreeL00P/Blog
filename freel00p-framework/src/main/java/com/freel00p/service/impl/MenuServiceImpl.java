@@ -7,14 +7,18 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.freel00p.constants.SystemConstants;
 import com.freel00p.domain.ResponseResult;
+import com.freel00p.domain.dto.RoleMenuVo;
 import com.freel00p.domain.entity.Menu;
+import com.freel00p.domain.entity.RoleMenu;
 import com.freel00p.domain.vo.MenuTreeVo;
 import com.freel00p.domain.vo.MenuVo;
 import com.freel00p.exception.SystemException;
 import com.freel00p.service.MenuService;
 import com.freel00p.mapper.MenuMapper;
+import com.freel00p.service.RoleMenuService;
 import com.freel00p.utils.SecurityUtils;
 import jdk.nashorn.internal.ir.LiteralNode;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -33,6 +37,12 @@ import static com.freel00p.enums.AppHttpCodeEnum.PARENT_ID_NOT_MENU_ID;
 @Service
 public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu>
     implements MenuService {
+
+    @Autowired
+    private RoleMenuService roleMenuService;
+
+    @Autowired
+    private MenuService menuService;
 
     @Override
     public List<String> selectPermsByUserId(Long id) {
@@ -173,6 +183,34 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu>
                     menuTreeVo.setChildren(getChildren(item.getId(), allMenuList));
                     return menuTreeVo;
                 }).collect(Collectors.toList());
+    }
+
+    @Override
+    public ResponseResult getRoleMenuTree(Long id) {
+        //构造查询条件，查询角色拥有的菜单权限
+        LambdaQueryWrapper<RoleMenu> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(RoleMenu::getRoleId,id);
+        List<RoleMenu> roleMenus = roleMenuService.list(wrapper);
+
+        //提取角色拥有的菜单权限id
+        List<Long> menuIds = roleMenus.stream().map(RoleMenu::getMenuId).collect(Collectors.toList());
+
+        //先查询出所有菜单
+        List<Menu> allMenuList = this.list();
+        ArrayList<MenuTreeVo> treeMenuList = new ArrayList<>();
+        //查询出所有一级菜单
+        List<Menu> oneMenuList = this.list(new LambdaQueryWrapper<Menu>().eq(Menu::getParentId,0));
+        for (Menu menu : oneMenuList) {
+            MenuTreeVo menuTreeVo = BeanUtil.copyProperties(menu, MenuTreeVo.class);
+            menuTreeVo.setChildren(getChildren(menu.getId(),allMenuList));
+            menuTreeVo.setLabel(menu.getMenuName());
+            treeMenuList.add(menuTreeVo);
+        }
+        //封装数据返回
+        RoleMenuVo roleMenuVo = new RoleMenuVo();
+        roleMenuVo.setCheckedKeys(menuIds);
+        roleMenuVo.setMenus(treeMenuList);
+        return ResponseResult.okResult(roleMenuVo);
     }
 }
 

@@ -87,6 +87,42 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role>
         roleMenuService.saveBatch(roleMenus);
         return ResponseResult.okResult();
     }
+
+    @Override
+    public ResponseResult getRoleInfo(Long id) {
+        Role role = this.getById(id);
+        return ResponseResult.okResult(role);
+    }
+
+    @Override
+    @Transactional
+    public ResponseResult updateRole(AddRoleDto addRoleDto) {
+        //删除当前拥有的菜单权限
+        LambdaQueryWrapper<RoleMenu> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(RoleMenu::getRoleId,addRoleDto.getId());
+        roleMenuService.remove(wrapper);
+        //更新角色信息
+        Role role = BeanUtil.copyProperties(addRoleDto, Role.class);
+        this.updateById(role);
+        //更新角色对应的菜单
+        List<Long> menuIds = addRoleDto.getMenuIds();
+        ArrayList<RoleMenu> roleMenus = new ArrayList<>();
+        for (Long menuId : menuIds) {
+            roleMenus.add( new RoleMenu(role.getId(),menuId));
+        }
+        roleMenuService.saveBatch(roleMenus);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult deleteRole(Long id) {
+        //删除角色的菜单权限
+        LambdaQueryWrapper<RoleMenu> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(RoleMenu::getRoleId,id);
+        roleMenuService.remove(wrapper);
+        this.removeById(id);
+        return ResponseResult.okResult();
+    }
 }
 
 
