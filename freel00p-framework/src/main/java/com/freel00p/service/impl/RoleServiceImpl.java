@@ -11,6 +11,7 @@ import com.freel00p.domain.dto.RoleStatusDto;
 import com.freel00p.domain.entity.Menu;
 import com.freel00p.domain.entity.Role;
 import com.freel00p.domain.entity.RoleMenu;
+import com.freel00p.domain.entity.User;
 import com.freel00p.domain.vo.PageVo;
 import com.freel00p.mapper.MenuMapper;
 import com.freel00p.service.MenuService;
@@ -122,6 +123,16 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role>
         roleMenuService.remove(wrapper);
         this.removeById(id);
         return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult<List<Role>> listAllRole() {
+        //只需要查询出状态正常的角色
+        List<Role> roleList = this.list(
+                new LambdaQueryWrapper<Role>()
+                        .eq(Role::getStatus, "0")
+            );
+        return ResponseResult.okResult(roleList);
     }
 }
 

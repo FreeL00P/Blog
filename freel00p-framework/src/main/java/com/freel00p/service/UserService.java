@@ -3,6 +3,8 @@ package com.freel00p.service;
 import com.freel00p.domain.ResponseResult;
 import com.freel00p.domain.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.freel00p.domain.vo.UserInfoVo;
+import com.freel00p.domain.vo.UserVo;
 
 /**
 * @author freeloop
@@ -16,4 +18,14 @@ public interface UserService extends IService<User> {
     ResponseResult updateUserInfo(User user);
 
     ResponseResult register(User user);
+
+    ResponseResult queryList(Integer pageNum, Integer pageSize, String userName, String phonenumber, String status);
+
+    ResponseResult addUser(UserVo userVo);
+
+    ResponseResult getUserInfo(Long id);
+
+    ResponseResult updateUser(UserVo userInfoVo);
+
+    ResponseResult deleteUser(Long id);
 }
