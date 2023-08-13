@@ -1,6 +1,7 @@
 package com.freel00p.service;
 
 import com.freel00p.domain.ResponseResult;
+import com.freel00p.domain.dto.AddCategoryVo;
 import com.freel00p.domain.entity.Category;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.freel00p.domain.vo.CategoryListVo;
@@ -17,4 +18,12 @@ public interface CategoryService extends IService<Category> {
     ResponseResult getCategoryList();
 
     List<CategoryListVo> listCategory();
+
+    ResponseResult queryList(Integer pageNum, Integer pageSize, String name, String status);
+
+    ResponseResult addCategory(AddCategoryVo addCategoryVo);
+
+    ResponseResult updateCategory(CategoryListVo categoryListVo);
+
+    ResponseResult removeCategory(Long id);
 }

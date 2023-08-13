@@ -4,17 +4,18 @@ import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSON;
 import com.freel00p.domain.ResponseResult;
+import com.freel00p.domain.dto.AddCategoryVo;
 import com.freel00p.domain.entity.Category;
 import com.freel00p.domain.vo.CategoryListVo;
+import com.freel00p.domain.vo.CategoryVo;
 import com.freel00p.domain.vo.ExcelCategoryVo;
 import com.freel00p.enums.AppHttpCodeEnum;
 import com.freel00p.service.CategoryService;
 import com.freel00p.utils.WebUtils;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -57,6 +58,34 @@ public class CategoryController {
             ResponseResult result = ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
             WebUtils.renderString(response, JSON.toJSONString(result));
         }
+    }
+
+    /**
+     * 分页查询分类列表
+     * @param pageNum
+     * @param pageSize
+     * @param name
+     * @param status
+     * @return
+     */
+    @GetMapping("/list")
+    public ResponseResult queryList(Integer pageNum,Integer pageSize,String name,String status){
+        return categoryService.queryList(pageNum,pageSize,name,status);
+    }
+
+    @PostMapping
+    public ResponseResult addCategory(@RequestBody AddCategoryVo addCategoryVo){
+        return categoryService.addCategory(addCategoryVo);
+    }
+
+    @PutMapping
+    public ResponseResult updateCategory(@RequestBody CategoryListVo categoryListVo){
+        return categoryService.updateCategory(categoryListVo);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseResult deleteCategory(@PathVariable Long id){
+        return categoryService.removeCategory(id);
     }
 
 }

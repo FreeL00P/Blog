@@ -25,4 +25,6 @@ public class CategoryListVo {
      * 描述
      */
     private String description;
+
+    private String status;
 }

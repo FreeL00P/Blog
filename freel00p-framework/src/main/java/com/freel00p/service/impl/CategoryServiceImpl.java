@@ -1,14 +1,18 @@
 package com.freel00p.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.freel00p.constants.SystemConstants;
 import com.freel00p.domain.ResponseResult;
+import com.freel00p.domain.dto.AddCategoryVo;
 import com.freel00p.domain.entity.Article;
 import com.freel00p.domain.entity.Category;
 import com.freel00p.domain.vo.CategoryListVo;
 import com.freel00p.domain.vo.CategoryVo;
+import com.freel00p.domain.vo.PageVo;
 import com.freel00p.service.ArticleService;
 import com.freel00p.service.CategoryService;
 import com.freel00p.mapper.CategoryMapper;
@@ -58,6 +62,41 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
         return BeanUtil.copyToList(list, CategoryListVo.class);
     }
 
+    @Override
+    public ResponseResult queryList(Integer pageNum, Integer pageSize, String name, String status) {
+        //构造查询条件
+        LambdaQueryWrapper<Category> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(StrUtil.isNotEmpty(status),Category::getStatus,status);
+        wrapper.like(StrUtil.isNotEmpty(name),Category::getName,name);
+        Page<Category> categoryPage = new Page<>(pageNum,pageSize);
+        Page<Category> retPage = page(categoryPage, wrapper);
+        List<CategoryListVo> categoryListVos = BeanUtil.copyToList(retPage.getRecords(), CategoryListVo.class);
+
+        PageVo pageVo = new PageVo();
+        pageVo.setTotal(retPage.getTotal());
+        pageVo.setRows(categoryListVos);
+        return ResponseResult.okResult(pageVo);
+    }
+
+    @Override
+    public ResponseResult addCategory(AddCategoryVo addCategoryVo) {
+        Category category = BeanUtil.copyProperties(addCategoryVo, Category.class);
+        this.save(category);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult updateCategory(CategoryListVo categoryListVo) {
+        Category category = BeanUtil.copyProperties(categoryListVo, Category.class);
+        this.updateById(category);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult removeCategory(Long id) {
+        this.removeById(id);
+        return ResponseResult.okResult();
+    }
 }
 
 
