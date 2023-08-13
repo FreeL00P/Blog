@@ -1,25 +1,23 @@
 package com.freel00p.domain.vo;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
- * LinkVo
+ * PageLinkVo
  *
  * @author fj
- * @since 2023/7/2 22:59
+ * @since 2023/8/13 9:36
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class LinkVo {
+public class PageLinkVo {
+
     /**
      * 网站地址
      */
     private String address;
     private String description;
     private Long id;
+
     private String name;
-    private String logo;
+    private String status;
 }

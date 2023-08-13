@@ -97,6 +97,13 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
         this.removeById(id);
         return ResponseResult.okResult();
     }
+
+    @Override
+    public ResponseResult getCategory(Long id) {
+        Category category = this.getById(id);
+        CategoryListVo categoryListVo = BeanUtil.copyProperties(category, CategoryListVo.class);
+        return ResponseResult.okResult(categoryListVo);
+    }
 }
 
 

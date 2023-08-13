@@ -78,6 +78,10 @@ public class CategoryController {
         return categoryService.addCategory(addCategoryVo);
     }
 
+    @GetMapping("/{id}")
+    public ResponseResult getCategory(@PathVariable Long id){
+        return categoryService.getCategory(id);
+    }
     @PutMapping
     public ResponseResult updateCategory(@RequestBody CategoryListVo categoryListVo){
         return categoryService.updateCategory(categoryListVo);
